@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#This basch displays:
+#The content of the current directory
+#In a list format
+#Where only the part of the name after the first displayed
+for x in *
+do
+    echo "$x" | cut -d "-" -f 2
+done
