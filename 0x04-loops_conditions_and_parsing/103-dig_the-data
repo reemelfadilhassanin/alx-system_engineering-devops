@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-awk '{print $1, $7, $9}' /etc/httpd/logs/access_log | sort | uniq -c | sort -nr | awk '{print "    " $1, $2, $3}' | head -n 10
+awk '{print $1,$9}' apache-access.log | sort | uniq -c | sort -nr
