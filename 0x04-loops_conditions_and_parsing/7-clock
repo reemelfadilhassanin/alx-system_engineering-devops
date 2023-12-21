@@ -8,7 +8,7 @@ do
     while [ $min -le 59 ]
     do
         echo "$min"
-        minutes=$((min+1))
+        (( min++ ))
     done
-    hour=$((h++))
+        ((h++))
 done
