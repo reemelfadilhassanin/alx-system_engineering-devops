@@ -6,10 +6,8 @@ x="school"
 
 if [ -e "$x" ]; then
     echo "school file exists"
-    
     if [ -s "$x" ]; then
         echo "school file is not empty"
-     
         if [ -f "$x" ]; then
             echo "school is a regular file"
         fi
