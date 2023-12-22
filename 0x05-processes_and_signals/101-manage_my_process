@@ -8,19 +8,19 @@ if [[ "$#" == "1" ]]; then
     echo "$!" > "$pros_pid"
     echo "manage_my_process started"
   elif [[ "$1" == "stop" ]]; then
-    if test -f "/var/run/my_process.pid"; then
-      kill "$(cat /var/run/my_process.pid)"
+    if test -f "$pros_pid"; then
+      kill "$(cat "$pros_pid")"
     fi
     rm /var/run/my_process.pid
     echo "manage_my_process stopped"
   elif [[ "$1" == "restart" ]]; then
     # stop program
-    if test -f "/var/run/my_process.pid"; then
-      kill "$(cat /var/run/my_process.pid)"
+    if test -f "$pros_pid"; then
+      kill "$(cat "$pros_pid")"
     fi
     # start program
     ./manage_my_process &
-    echo "$!" > /var/run/my_process.pid
+    echo "$!" > "$pros_pid"
     echo "manage_my_process restarted"
   else
     echo "Usage: manage_my_process {start|stop|restart}"
