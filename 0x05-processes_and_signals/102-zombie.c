@@ -1,50 +1,48 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 /**
- * infinite_while - Creates an infinite loop
+ * infinite_while - Function to create infinite while loop.
  *
- * Return: Always 0
+ * Return: 0.
  */
 int infinite_while(void)
 {
-    while (1)
-    {
-        sleep(1);
-    }
-    return (0);
+	while (1)
+	{
+		sleep(1);
+	}
+	return (0);
 }
 
 /**
- * main - Entry point of the program
+ * new_process - function to create a new process
+ * prints the PID of the new process.
+ */
+void new_process(void)
+{
+	int c = fork();
+
+	if (c == 0)
+	{
+		printf("Zombie process created, PID: %d\n", getpid());
+		exit(0);
+	}
+}
+
+/**
+ * main - entery point of prog.
  *
- * Return: Always 0
+ * Return: alwys0
  */
 int main(void)
 {
-    pid_t child_pid;
-    int i;
+	int i;
 
-    for (i = 0; i < 5; i++)
-    {
-        child_pid = fork();
-        if (child_pid == -1)
-        {
-            perror("fork");
-            exit(EXIT_FAILURE);
-        }
-
-        if (child_pid == 0)
-        {
-            printf("Zombie process created, PID: %d\n", getpid());
-            exit(EXIT_SUCCESS);
-        }
-    }
-
-    infinite_while(); /* To keep the parent process running */
-
-    return (0);
+	for (i = 0; i < 5; i++)
+	{
+		new_process();
+	}
+	return (infinite_while());
 }
