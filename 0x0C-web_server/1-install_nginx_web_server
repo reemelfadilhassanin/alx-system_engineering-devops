@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Install nginx web server
+apt-get update -y
+apt-get install nginx -y
+
+# Ensure nginx is listening on port 80
+sed -i 's/80 default_server/80 default_server;/g' /etc/nginx/sites-available/default
+
+# Restart nginx
+kill -HUP $(cat /var/run/nginx.pid)
+
+# Create index.html with "Hello World!"
+echo "Hello World!" > /usr/share/nginx/html/index.html
