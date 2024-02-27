@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
+#Configure your Nginx server so that /redirect_me is redirecting to another page.
 
-# Install nginx web server
-apt-get update -y
-apt-get install nginx -y
 
-# Ensure nginx is listening on port 80
-sed -i 's/80 default_server/80 default_server;/g' /etc/nginx/sites-available/default
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+         sudo apt-get install nginx -y
 
-# Restart nginx
-kill -HUP $(cat /var/run/nginx.pid)
+echo -e "\nSetting up some minor stuff.\n"
+sudo service nginx start
 
-# Create index.html with redirect message
-echo -e "<html><head><title>Redirecting...</title><meta http-equiv='refresh' content='0; URL=https://www.youtube.com/watch?v=QH2-TGUlwu4'></head><body><p>Redirecting to <a href='https://www.youtube.com/watch?v=QH2-TGUlwu4'>https://www.youtube.com/watch?v=QH2-TGUlwu4</a></p></body></html>" > /usr/share/nginx/html/redirect_me/index.html
+sudo ufw allow 'Nginx HTTP'
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
 
-# Configure nginx to redirect /redirect_me
-echo -e "server {\n\tlisten 80;\n\tserver_name _;\n\tlocation /redirect_me {\n\t\treturn 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n\t}\n}" > /etc/nginx/sites-available/redirect_me
-ln -s /etc/nginx/sites-available/redirect_me /etc/nginx/sites-enabled/
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
-# Restart nginx to apply changes
-kill -HUP $(cat /var/run/nginx.pid)
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
+
+sudo service nginx restart
+
+echo -e "\nCompleted.\n"
