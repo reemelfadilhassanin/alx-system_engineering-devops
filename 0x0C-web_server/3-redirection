@@ -2,24 +2,22 @@
 #Configure your Nginx server so that /redirect_me is redirecting to another page.
 
 
-# Install Nginx if not already installed
-apt-get update
-apt-get install -y nginx
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+         sudo apt-get install nginx -y
 
-# Configure Nginx redirection
-echo 'server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+echo -e "\nSetting up some minor stuff.\n"
+sudo service nginx start
 
-    root /var/www/html;
-    index index.html index.htm;
+sudo ufw allow 'Nginx HTTP'
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
 
-    server_name _;
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
-    location /redirect_me {
-        return 301 https://www.example.com/new-page;
-    }
-}' > /etc/nginx/sites-available/default
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html xq
+sed -i "/server_name _;/ a\\\trewrite ^/redirect_me http://www.holbertonschool.com permanent;" /etc/nginx/sites-available/default
 
-# Restart Nginx
-service nginx restart
+sudo service nginx restart
+
+echo -e "\nCompleted.\n"
