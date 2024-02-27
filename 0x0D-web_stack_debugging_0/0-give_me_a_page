@@ -1,5 +1,31 @@
 #!/usr/bin/env bash
 # Access the Docker container
-rm /etc/nginx/sites-enabled/default
-ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-service nginx  restart
+# Start the Docker container with port mapping
+docker run -p 8080:80 -d -it holbertonschool/265-0
+
+# Get the container ID
+container_id=$(docker ps -q)
+
+# Connect to the Docker container
+docker exec -it "$container_id" /bin/bash
+
+# Check the status of the Apache service
+service apache2 status
+
+# Check Apache error logs for any issues
+cat /var/log/apache2/error.log
+
+# Ensure Apache is configured to serve content from /var/www/html
+# If not, edit the Apache configuration file
+vi /etc/apache2/sites-available/000-default.conf
+
+# Update the DocumentRoot directive to point to /var/www/html if necessary
+
+# Restart Apache service
+service apache2 restart
+
+# Exit the container
+exit
+
+# Test by querying the root of the container
+curl 0:8080
