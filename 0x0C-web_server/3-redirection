@@ -2,31 +2,22 @@
 #Configure your Nginx server so that /redirect_me is redirecting to another page.
 
 
-esudo apt-get update
-sudo apt-get install nginx -y
-echo "Hello World!" | sudo tee /usr/share/nginx/html/index.html
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+         sudo apt-get install nginx -y
 
-new_config=\
-"server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-               root /var/www/html;
-        index index.html index.htm index.nginx-debian.html;
-        server_name _;
-        location / {
-                try_files \$uri \$uri/ =404;
-        }
-        
-        if (\$request_filename ~ redirect_me){
-            rewrite ^ https://www.youtube.com/@tpauldike permanent;
-        }
-}
-"
+echo -e "\nSetting up some minor stuff.\n"
+sudo service nginx start
 
-echo "$new_config" > /etc/nginx/sites-available/default
-if [ "$(pgrep nginx)" -le 0 ];
-then
-    service nginx start
-else
-    service nginx restart
-fi;
+sudo ufw allow 'Nginx HTTP'
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
+
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
+
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
+sed -i "/server_name _;/ a\\\trewrite ^/redirect_me http://www.holbertonschool.com permanent;" /etc/nginx/sites-available/default
+
+sudo service nginx restart
+
+echo -e "\nCompleted.\n"
