@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# web server 01 login
+
+ssh -i ~/.ssh/id_rsa ubuntu@54.236.46.166
