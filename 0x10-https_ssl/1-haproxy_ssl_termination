@@ -5,7 +5,7 @@ global
         stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
         stats timeout 30s
         user haproxy
-        group haproxy
+		group haproxy
         daemon
 
         ca-base /etc/ssl/certs
