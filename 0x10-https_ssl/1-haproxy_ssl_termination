@@ -47,5 +47,5 @@ frontend reem-in-frontend-https
 
 backend reem-in-backend
         balance roundrobin
-        server 151666-web-01 100.25.34.17 check
-        server 151666-web-02 34.229.56.85 check
+        server 512274-web-01 100.25.34.17 check
+        server 512274-web-02 34.229.56.85 check
