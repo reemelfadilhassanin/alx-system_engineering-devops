@@ -1,0 +1,20 @@
+[mysqld]
+# General
+server-id               = 1
+log_bin                 = /var/log/mysql/mysql-bin.log
+binlog_do_db            = tyrell_corp
+
+# Replication
+relay_log               = /var/log/mysql/mysql-relay-bin
+log_slave_updates       = 1
+auto_increment_increment = 2
+auto_increment_offset    = 1
+
+# Networking
+# bind-address            = 127.0.0.1
+
+# Logging
+log_error               = /var/log/mysql/error.log
+
+# Security
+secure_auth             = on
