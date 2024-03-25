@@ -7,12 +7,12 @@ import json
 import requests
 import sys
 
-base = 'https://jsonplaceholder.typicode.com/'
+base_url = 'https://jsonplaceholder.typicode.com/'
 
 
 def fetch_todo_list_progress():
-    '''this defines to fetch list progress'''
-    if len(sys.argv) < 2:
+    '''Fetches TODO list progress'''
+    if not len(sys.argv):
         return print('USAGE:', __file__, '<employee id>')
     eid = sys.argv[1]
     try:
@@ -20,28 +20,27 @@ def fetch_todo_list_progress():
     except ValueError:
         return print('Employee id must be an integer')
 
-    u_response = requests.get(base + 'users/' + eid)
-    if u_response.status_code == 404:
+    response = requests.get(base_url + 'users/' + eid)
+    if response.status_code == 404:
         return print('User id not found')
-    elif u_response.status_code != 200:
-        return print('Error: status_code:', u_response.status_code)
-    user = u_response.json()
+    elif response.status_code != 200:
+        return print('Error: status_code:', response.status_code)
+    user = response.json()
 
-    u_response = requests.get(base + 'todos/')
-    if u_response.status_code != 200:
-        return print('Error: status_code:', u_response.status_code)
-    todos = u_response.json()
-    user_to = [todo for todo in todos
-               if todo.get('userId') == user.get('id')]
-    completed = [todo for todo in user_to if todo.get('completed')]
+    response = requests.get(base_url + 'todos/')
+    if response.status_code != 200:
+        return print('Error: status_code:', response.status_code)
+    todos = response.json()
+    user_todos = [todo for todo in todos
+                  if todo.get('userId') == user.get('id')]
+    json_data = {user.get('id'): [{"task": todo.get('title'), "completed": todo.get(
+        'completed'), "username": user.get('name')} for todo in user_todos]}
 
-    user_to = [{'task': todo.get('title'),
-                'completed': todo.get('completed'),
-                'username': user.get('username')}
-               for todo in user_to]
-    data_user = {eid: user_to}
-    with open(eid + '.json', 'w') as file:
-        json.dump(data_user, file)
+    # Export to JSON
+    with open(f"{eid}.json", 'w') as jsonfile:
+        json.dump(json_data, jsonfile, indent=4)
+
+    print(f"Data exported to {eid}.json")
 
 
 if __name__ == '__main__':
