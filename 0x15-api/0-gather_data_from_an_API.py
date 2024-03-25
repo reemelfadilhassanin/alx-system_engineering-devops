@@ -31,13 +31,13 @@ def fetch_todo_list_progress():
         return print('Error: status_code:', u_response.status_code)
     userdos = u_response.json()
 
-    user_todos = [todo for todo in userdos
-                  if todo.get('userId') == user_d.get('id')]
-    completed = [todo for todo in user_todos if todo.get('completed')]
+    user_to = [to for to in userdos
+               if to.get('userId') == user_d.get('id')]
+    completed = [to for to in user_to if to.get('completed')]
     print('Employee', user_d.get('name'),
           'is done with tasks({}/{}):'.
-          format(len(completed), len(user_todos)))
-    [print('\t', todo.get('title')) for todo in completed]
+          format(len(completed), len(user_to)))
+    [print('\t', to.get('title')) for to in completed]
 
 
 if __name__ == '__main__':
