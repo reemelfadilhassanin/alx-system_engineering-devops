@@ -25,20 +25,20 @@ def fetch_todo_list_progress():
         return print('User id not found')
     elif u_response.status_code != 200:
         return print('Error: status_code:', u_response.status_code)
-    user_d = u_response.json()
+    user = u_response.json()
 
     u_response = requests.get(base + 'todos/')
     if u_response.status_code != 200:
         return print('Error: status_code:', u_response.status_code)
-    userdos = u_response.json()
+    todos = u_response.json()
+    user_to = [todo for todo in todos
+               if todo.get('userId') == user.get('id')]
+    completed = [todo for todo in user_to if todo.get('completed')]
 
-    user_to = [to for to in userdos
-               if to.get('userId') == user_d.get('id')]
-    completed = [to for to in user_to if to.get('completed')]
-    user_to = [{'task': to.get('title'),
-                'completed': to.get('completed'),
-                'username': user_d.get('username')}
-               for to in user_to]
+    user_to = [{'task': todo.get('title'),
+                'completed': todo.get('completed'),
+                'username': user.get('username')}
+               for todo in user_to]
     data = {eid: user_to}
     with open(eid + '.json', 'w') as file:
         json.dump(data, file)

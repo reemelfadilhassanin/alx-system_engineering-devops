@@ -36,11 +36,11 @@ def fetch_todo_list_progress():
     completed = [to for to in user_to if to.get('completed')]
 
     with open(eid + '.csv', 'w') as csvfile:
-        writer = csv.writer(csvfile, lineterminator='\n',
-                            quoting=csv.QUOTE_ALL)
-        [writer.writerow(['{}'.format(field) for field in
-                          (to.get('userId'), user.get('username'),
-                           to.get('completed'), to.get('title'))])
+        writer_csv = csv.writer(csvfile, lineterminator='\n',
+                                quoting=csv.QUOTE_ALL)
+        [writer_csv.writerow(['{}'.format(field) for field in
+                              (to.get('userId'), user.get('username'),
+                               to.get('completed'), to.get('title'))])
          for to in user_to]
 
 
