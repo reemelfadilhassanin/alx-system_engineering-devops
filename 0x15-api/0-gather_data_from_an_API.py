@@ -4,24 +4,41 @@ apython script using this REST API, for a given employee ID,
 returns information about his/her TODO list progress
 """
 import requests
+import sys
+
+base = 'https://jsonplaceholder.typicode.com/'
+
+
+def fetch_todo_list_progress():
+    '''this defines to fetch list progress'''
+    if len(sys.argv) < 2:
+        return print('USAGE:', __file__, '<employee id>')
+    eid = sys.argv[1]
+    try:
+        _eid = int(sys.argv[1])
+    except ValueError:
+        return print('Employee id must be an integer')
+
+    u_response = requests.get(base + 'users/' + eid)
+    if u_response.status_code == 404:
+        return print('User id not found')
+    elif u_response.status_code != 200:
+        return print('Error: status_code:', u_response.status_code)
+    user_d = u_response.json()
+
+    u_response = requests.get(base + 'todos/')
+    if u_response.status_code != 200:
+        return print('Error: status_code:', u_response.status_code)
+    userdos = u_response.json()
+
+    user_todos = [todo for todo in userdos
+                  if todo.get('userId') == user_d.get('id')]
+    completed = [todo for todo in user_todos if todo.get('completed')]
+    print('Employee', user_d.get('name'),
+          'is done with tasks({}/{}):'.
+          format(len(completed), len(user_todos)))
+    [print('\t', todo.get('title')) for todo in completed]
+
+
 if __name__ == '__main__':
-    url = "https://jsonplaceholder.typicode.com"
-    employeeId = argv[1]
-
-    employee = requests.get("{}/users/{}".format(url, employeeId)).json()
-    todos = requests.get(url + "/todos", params={"userId": employeeId}).json()
-
-    completed_tasks = []
-    for data in todos:
-        if data.get('completed') is True:
-            completed_tasks.append(data.get('title'))
-
-    employee_name = employee.get('name')
-    total_num_of_tasks = len(todos)
-    num_of_tasks_done = len(completed_tasks)
-
-    print("Employee {} is done with tasks({}/{}):".format(employee_name,
-          num_of_tasks_done, total_num_of_tasks))
-
-    for title in completed_tasks:
-        print("\t {}".format(title))
+    fetch_todo_list_progress()
