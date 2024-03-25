@@ -39,9 +39,9 @@ def fetch_todo_list_progress():
                 'completed': todo.get('completed'),
                 'username': user.get('username')}
                for todo in user_to]
-    data = {eid: user_to}
+    data_user = {eid: user_to}
     with open(eid + '.json', 'w') as file:
-        json.dump(data, file)
+        json.dump(data_user, file)
 
 
 if __name__ == '__main__':
