@@ -14,9 +14,7 @@ def count_words(subreddit, word_list):
     Returns:
         None
     """
-    def recurse(subreddit, hot_list=None, after=None):
-        """Helper recursive function to fetch hot articles."""
-		sub_info = requests.get("https://www.reddit.com/r/{}/hot.json"
+    sub_info = requests.get("https://www.reddit.com/r/{}/hot.json"
                             .format(subreddit),
                             params={"after": after},
                             headers={"User-Agent": "My-User-Agent"},
@@ -53,4 +51,3 @@ def count_words(subreddit, word_list):
     else:
         return count_words(subreddit, word_list, word_count,
                            info.get("data").get("after"))
-
