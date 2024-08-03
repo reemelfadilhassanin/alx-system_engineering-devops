@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """A function that queries the Reddit API to print the titles of the top 10 hot posts."""
-
 import requests
 
 def top_ten(subreddit):
@@ -12,19 +11,17 @@ def top_ten(subreddit):
     Returns:
         None: If the subreddit is invalid or if the request fails.
     """
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    headers = {'User-Agent': 'Linux:top_ten:v1.0.0'}
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    headers = {'User-Agent': 'Linux:top_ten:v1.0.0 (by /u/your_username)'}
     
     try:
         response = requests.get(url, headers=headers, allow_redirects=False)
-        print("Status Code:", response.status_code)
         if response.status_code == 200:
             try:
-                data = response.json()
-                print("Response JSON:", data)
-                posts = data['data']['children']
+                data = response.json().get('data', {})
+                posts = data.get('children', [])
                 for post in posts[:10]:
-                    print(post['data']['title'])
+                    print(post.get('data', {}).get('title', ''))
             except (KeyError, TypeError) as e:
                 print("JSON Parsing Error:", e) 
                 print(None)
