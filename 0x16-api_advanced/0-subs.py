@@ -4,8 +4,8 @@
 Returns:
     int: The number of subscribers if the subreddit is valid, otherwise 0.
 """
-from requests import get
 
+import requests
 def number_of_subscribers(subreddit):
     """This function defines  queries the Reddit API to get the number of subscribers.
 
@@ -15,16 +15,13 @@ def number_of_subscribers(subreddit):
     Returns:
         int: The number of subscribers if the subreddit is valid, otherwise 0.
     """
-    if subreddit and isinstance(subreddit, str):
-        subs = 0
-        url = f'https://reddit.com/r/{subreddit}/about.json'
-        headers = {'User-Agent': 'my-app/0.0.1'}
-        try:
-            req = get(url, headers=headers)
-            if req.status_code == 200:
-                data = req.json()
-                subs = data.get('data', {}).get('subscribers', 0)
-        except Exception:
-            pass
-        return subs
+	
+
+sub = requests.get("https://www.reddit.com/r/{}/about.json"
+                   .format(subreddit),
+                            headers={"User-Agent": "My-User-Agent"},
+                            allow_redirects=False)
+if sub.status_code >= 300:
     return 0
+
+return sub.json().get("data").get("subscribers")
