@@ -21,7 +21,6 @@ def number_of_subscribers(subreddit):
     try:
         response = requests.get(url_base, headers=headers, allow_redirects=False)
         
-        # Debug: Print the status code and headers
         print("Status Code: {}".format(response.status_code))
         print("Headers: {}".format(response.headers))
 
