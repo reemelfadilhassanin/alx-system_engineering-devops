@@ -1,13 +1,13 @@
 #!/usr/bin/python3
-"""A function that define queries the Reddit API
+"""A function define that queries the Reddit API.
 
-    Returns:
-        the number of subscribers
+Returns:
+    int: The number of subscribers if the subreddit is valid, otherwise 0.
 """
 from requests import get
 
 def number_of_subscribers(subreddit):
-    """This function define queries the Reddit API to get the number of subscribers
+    """This function defines  queries the Reddit API to get the number of subscribers.
 
     Args:
         subreddit (str): The name of the subreddit to query.
@@ -17,7 +17,7 @@ def number_of_subscribers(subreddit):
     """
     if subreddit and isinstance(subreddit, str):
         subs = 0
-        url = 'https://reddit.com/r/{}/about.json'.format(subreddit)
+        url = f'https://reddit.com/r/{subreddit}/about.json'
         headers = {'User-Agent': 'my-app/0.0.1'}
         try:
             req = get(url, headers=headers)
