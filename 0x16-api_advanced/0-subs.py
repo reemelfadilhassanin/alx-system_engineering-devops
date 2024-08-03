@@ -13,7 +13,9 @@ def number_of_subscribers(subreddit):
         int: The number of subscribers if the subreddit is valid, otherwise 0.
     """
     url_base = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    headers = {'User-Agent': 'Linux:0x16-api_advanced:v1.0.0'}
+    headers = {
+        'User-Agent': 'myapp:myapp:v1.0 (by /u/yourusername)'
+    }
     response = requests.get(url_base, headers=headers, allow_redirects=False)
 
     if response.status_code == 200:
