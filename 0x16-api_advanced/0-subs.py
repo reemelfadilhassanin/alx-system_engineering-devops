@@ -4,7 +4,6 @@
 Returns:
     int: The number of subscribers if the subreddit is valid, otherwise 0.
 """
-
 import requests
 
 def number_of_subscribers(subreddit):
