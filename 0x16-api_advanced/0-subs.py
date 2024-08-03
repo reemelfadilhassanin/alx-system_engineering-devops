@@ -23,10 +23,10 @@ def number_of_subscribers(subreddit):
             subscribers = data.get('subscribers', 0)
             return subscribers
         except (ValueError, TypeError) as e:
-            print(f"Error parsing JSON response: {e}")
+            print("Error parsing JSON response: {}".format(e))
     elif response.status_code == 404:
         return 0
     else:
-        print(f"Received unexpected status code {response.status_code}")
+        print("Received unexpected status code {}".format(response.status_code))
 
     return 0
