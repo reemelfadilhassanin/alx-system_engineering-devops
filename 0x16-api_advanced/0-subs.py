@@ -12,10 +12,23 @@ def number_of_subscribers(subreddit):
     Returns:
         int: The number of subscribers if the subreddit is valid, otherwise 0.
     """
-    if subreddit is None or type(subreddit) is not str:
+    url_base = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+    headers = {
+        'User-Agent': 'myapp:myapp:v1.0 (by /u/yourusername)'
+    }
+    response = requests.get(url_base, headers=headers, allow_redirects=False)
+
+    if response.status_code == 200:
+        try:
+            response_json = response.json()
+            data = response_json.get('data', {})
+            subscribers = data.get('subscribers', 0)
+            return subscribers
+        except (ValueError, TypeError) as e:
+            print("Error parsing JSON response: {}".format(e))
+    elif response.status_code == 404:
         return 0
-    r = requests.get('http://www.reddit.com/r/{}/about.json'.format(subreddit),
-                     headers={'User-Agent': '0x16-api_advanced:project:\
-v1.0.0 (by /u/firdaus_cartoon_jr)'}).json()
-    subs = r.get("data", {}).get("subscribers", 0)
-    return subs
+    else:
+        print("Received unexpected status code {}".format(response.status_code))
+
+    return 0
