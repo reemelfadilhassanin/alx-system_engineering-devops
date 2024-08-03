@@ -4,7 +4,7 @@
 	Returns:
 		the number of subscribers
 	"""
-import requests
+from requests import get
 
 
 
@@ -18,14 +18,12 @@ def number_of_subscribers(subreddit):
 		int: The number of subscribers if is valid, otherwise 0.
 	"""
 
-url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0"
-    }
-response = requests.get(url, headers=headers, allow_redirects=False)
-
-if response.status_code == 404:
-	return 0
-
-results = response.json().get("data")
-return results.get("subscribers")
+	if subreddit and type(subreddit) is str:
+			subs = 0
+			url = 'https://reddit.com/r/{}/about.json'.format(subreddit)
+			headers = {'user-agent': 'my-app/0.0.1'}
+			req = get(url, headers=headers)
+			if req.status_code == 200:
+				data = req.json()
+				subs = data.get('data', {}).get('subscribers', 0)
+			return subs
