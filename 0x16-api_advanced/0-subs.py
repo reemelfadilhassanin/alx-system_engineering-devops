@@ -20,19 +20,21 @@ def number_of_subscribers(subreddit):
     headers = {'User-Agent': 'CustomClient/1.0'}
     try:
         response = requests.get(url_base, headers=headers, allow_redirects=False)
-    
-        print(f"Status Code: {response.status_code}")
-        print(f"Headers: {response.headers}")
+        
+        # Debug: Print the status code and headers
+        print("Status Code: {}".format(response.status_code))
+        print("Headers: {}".format(response.headers))
 
         if response.status_code == 200:
             response_json = response.json()
-            print(f"Response JSON: {response_json}")
+            print("Response JSON: {}".format(response_json))
+            
             if 'data' in response_json:
                 return response_json['data'].get('subscribers', 0)
         else:
-            print(f"Error response received: {response.status_code}")
+            print("Error response received: {}".format(response.status_code))
     
     except requests.RequestException as e:
-        print(f"Request Exception: {e}")
+        print("Request Exception: {}".format(e))
 
     return 0
