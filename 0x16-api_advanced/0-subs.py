@@ -1,9 +1,6 @@
 #!/usr/bin/python3
-"""A function that queries the Reddit API.
+"""A function that queries the Reddit API to get the number of subscribers."""
 
-Returns:
-    int: The number of subscribers if the subreddit is valid, otherwise 0.
-"""
 import requests
 
 def number_of_subscribers(subreddit):
@@ -20,9 +17,16 @@ def number_of_subscribers(subreddit):
     response = requests.get(url_base, headers=headers, allow_redirects=False)
 
     if response.status_code == 200:
-        response_json = response.json()
-        if 'data' in response_json:
-            return response_json['data'].get('subscribers', 0)
+        try:
+            response_json = response.json()
+            data = response_json.get('data', {})
+            subscribers = data.get('subscribers', 0)
+            return subscribers
+        except (ValueError, TypeError) as e:
+            print(f"Error parsing JSON response: {e}")
     elif response.status_code == 404:
         return 0
+    else:
+        print(f"Received unexpected status code {response.status_code}")
+
     return 0
