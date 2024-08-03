@@ -30,16 +30,29 @@ def recurse(subreddit, hot_list=None, after=None, count=0):
     
     response = requests.get(url, headers=headers, params=params, allow_redirects=False)
     
+    # Debugging: Print the response status code and content
+    print(f"Status Code: {response.status_code}")
+    print(f"Response Content: {response.text}")
+
     if response.status_code == 404:
         return None
+    elif response.status_code != 200:
+        # Handle unexpected status codes
+        return None
 
-    results = response.json().get("data", {})
+    try:
+        results = response.json().get("data", {})
+    except ValueError as e:
+        # Handle JSON decoding errors
+        print(f"JSON Decoding Error: {e}")
+        return None
+    
     after = results.get("after")
     count += len(results.get("children", []))
     
     for child in results.get("children", []):
         hot_list.append(child.get("data", {}).get("title"))
-    
+
     if after:
         return recurse(subreddit, hot_list, after, count)
     
