@@ -15,11 +15,19 @@ def number_of_subscribers(subreddit):
     Returns:
         int: The number of subscribers if the subreddit is valid, otherwise 0.
     """
-    sub_info = requests.get("https://www.reddit.com/r/{}/about.json"
-                            .format(subreddit),
-                            headers={"User-Agent": "My-User-Agent"},
-                            allow_redirects=False)
-    if sub_info.status_code >= 300:
-        return 0
+    base_url = 'https://www.reddit.com/r/'
 
-    return sub_info.json().get("data").get("subscribers")
+    url = '{}{}/about.json'.format(base_url, subreddit)
+    headers = {
+        'User-Agent':
+        'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) \
+        Gecko/20100401 Firefox/3.6.3 (FM Scene 4.6.1)'
+    }
+    results = requests.get(
+        url,
+        headers=headers,
+        allow_redirects=False
+    )
+    if results.status_code == 200:
+        return results.json()['data']['subscribers']
+    return 0
