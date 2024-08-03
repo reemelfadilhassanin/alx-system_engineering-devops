@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 """A function that queries the Reddit API
 
-    Returns:
-        the number of subscribers
-    """
+	Returns:
+		the number of subscribers
+	"""
 import requests
+url = 'http://reddit.com/r/{}/about.json'
 
 def number_of_subscribers(subreddit):
 	"""This to define queries the Reddit API
@@ -16,18 +17,9 @@ def number_of_subscribers(subreddit):
 		int: The number of subscribers if is valid, otherwise 0.
 	"""
 
-url = f'https://www.reddit.com/r/{subreddit}/about.json'
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
-    
-try:
-        
-        response = requests.get(url, headers=headers, allow_redirects=False)
-        
-        
-        if response.status_code == 200:
-            data = response.json()
-            return data.get('data', {}).get('subscribers', 0)
-        else:
-        	return 0
-except Exception:
-    return 0
+headers = {'User-agent': 'Unix:0-subs:v1'}
+response = requests.get(url.format(subreddit),
+							headers=headers)
+if response.status_code != 200:
+	return 0
+return response.json().get('data', {}).get('subscribers', 0)
