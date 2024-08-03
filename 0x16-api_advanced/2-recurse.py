@@ -11,25 +11,31 @@ def recurse(subreddit, hot_list=[], after=None):
         hot_list (list): The list to accumulate the titles (default empty).
         after (str): The pagination parameter to fetch the next set of results (default None).
 
-    Returns:
+    Returns:S
         list: A list of all hot article titles or None if invalid subreddit.
     """
-    req = requests.get(
-        "https://www.reddit.com/r/{}/hot.json".format(subreddit),
-        headers={"User-Agent": "Custom"},
-        params={"after": after},
-    )
-
-    if req.status_code == 200:
-        for get_data in req.json().get("data").get("children"):
-            dat = get_data.get("data")
-            title = dat.get("title")
-            hot_list.append(title)
-        after = req.json().get("data").get("after")
-
-        if after is None:
-            return hot_list
+    base = 'https://www.reddit.com/'
+    endpoint = 'r/{}/hot.json'.format(subreddit)
+    query_string = '?show="all"&limit=100&after={}&count={}'.format(
+        after, count)
+    url = base + endpoint + query_string
+    headers = {'User-Agent': 'Python/1.0(Holberton School 0x16 task 2)'}
+    response = requests.get(url, headers=headers)
+    if not response.ok:
+        if len(hot_list) == 0:
+            return None
         else:
-            return recurse(subreddit, hot_list, after)
-    else:
+            return hot_list
+
+    data = response.json()['data']
+    for post in data['children']:
+        hot_list.append(post['data']['title'])
+    after = data['after']
+    dist = data['dist']
+    if (after):
+        recurse(subreddit, hot_list, count + dist, after)
+
+    if len(hot_list) == 0:
         return None
+    else:
+        return hot_list
