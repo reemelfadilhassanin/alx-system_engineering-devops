@@ -3,39 +3,36 @@
 
 import requests
 
-url = 'https://www.reddit.com/r/{}/hot.json'
-
-def recurse(subreddit, hot_list=[], after=None):
+def recurse(subreddit, hot_list=[]):
     """Recursively fetch all hot articles' titles from a subreddit.
 
     Args:
         subreddit (str): The name of the subreddit to query.
         hot_list (list): The list to accumulate the titles (default empty).
-        after (str): The pagination parameter to fetch the next set of results.
 
     Returns:
         list: A list of all hot article titles or None if invalid subreddit.
     """
-    headers = {'User-Agent': 'Unix:0-subs:v1'}
-    params = {'limit': 100}
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    headers = {'User-Agent': 'Linux:recurse:v1.0.0'}
+    response = requests.get(url, headers=headers, allow_redirects=False)
     
-    if after:
-        params['after'] = after
-    
-    response = requests.get(url.format(subreddit), headers=headers, params=params, allow_redirects=False)
-    
-    if response.status_code != 200:
-        return None
-
-    data = response.json().get('data', {})
-    after = data.get('after')
-    
-    if not after:
-        after = "STOP"
-    
-    hot_list.extend(post.get('data', {}).get('title') for post in data.get('children', []))
-    
-    if after == "STOP":
-        return hot_list
+    if response.status_code == 200:
+        try:
+            data = response.json()
+            posts = data['data']['children']
+            after = data['data'].get('after')
+            
+            # Add titles of current page to hot_list
+            hot_list.extend(post['data']['title'] for post in posts)
+            
+            # If there's more data, recursively fetch next page
+            if after:
+                return recurse(subreddit, hot_list)
+            else:
+                return hot_list
+            
+        except (KeyError, TypeError):
+            return None
     else:
-        return recurse(subreddit, hot_list, after)
+        return None
