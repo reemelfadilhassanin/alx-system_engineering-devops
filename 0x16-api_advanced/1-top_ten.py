@@ -11,7 +11,7 @@ def top_ten(subreddit):
     Returns:
         None: If the subreddit is invalid or if the request fails.
     """
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {'User-Agent': 'Linux:top_ten:v1.0.0 (by /u/your_username)'}
     
     try:
